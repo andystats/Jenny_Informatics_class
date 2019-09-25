@@ -57,7 +57,7 @@ c(
 1   ,#Intercept
 18  ,#Age
 0   ,#Sex is female (0 = Male, 1 = Female)
-1   ,#Race is hispanic
+0   ,#Race is hispanic
 0   ,#Race is black
 0   ,#Race is other
 1   ,#as child, badly beaten by parent/caregiver
