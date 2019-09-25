@@ -56,27 +56,27 @@ x<-
 c(
 1   ,#Intercept
 18  ,#Age
-0   ,#Sex is female (0 = Male, 1 = Female)
+1   ,#Sex is female (0 = Male, 1 = Female)
 0   ,#Race is hispanic
 0   ,#Race is black
 0   ,#Race is other
-1   ,#as child, badly beaten by parent/caregiver
+0   ,#as child, badly beaten by parent/caregiver
 0   ,#badly beaten by spouse/romantic partner
 1   ,#badly beaten by anyone else
-0   ,#mugged/held up/threatened with weapon
+1   ,#mugged/held up/threatened with weapon
 0   ,#ever raped (penetration occurred)
 0   ,#ever sexually assaulted or molested
-0   ,#someone close died unexpectedly
-0   ,#anyone close had extreme traumatic exper.
-0   ,#as child, witnessed serious physical fights
+1   ,#someone close died unexpectedly
+1   ,#anyone close had extreme traumatic exper.
+1   ,#as child, witnessed serious physical fights
 0   ,#saw person badly injured/killed/dead body
 0   ,#ever experienced other very traumatic event
-0   ,#purposely stay away things remind event
+1   ,#purposely stay away things remind event
 0   ,#lose interest in things used to enjoy
 0   ,#feel emotionally distant/cut-off from people
 0   ,#trouble feeling love/happiness toward others
 0   ,#feel no reason to plan for the future
-0   ,#trouble falling asleep during random event
+1   ,#trouble falling asleep during random event
 0   )#more easily startled by ordinary noises
 ```
 
