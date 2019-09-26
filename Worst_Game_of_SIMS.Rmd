@@ -64,7 +64,7 @@ c(
 0   ,#badly beaten by spouse/romantic partner
 1   ,#badly beaten by anyone else
 1   ,#mugged/held up/threatened with weapon
-0   ,#ever raped (penetration occurred)
+1   ,#ever raped (penetration occurred)
 0   ,#ever sexually assaulted or molested
 1   ,#someone close died unexpectedly
 1   ,#anyone close had extreme traumatic exper.
