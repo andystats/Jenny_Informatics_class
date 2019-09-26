@@ -1,7 +1,7 @@
 ---
 title: "Worst Game Of SIMS"
 author: "In-class exercise"
-date: "9/25/2019"
+date: "9/26/2019"
 output: pdf_document
 ---
 
@@ -59,7 +59,7 @@ c(
 1   ,#Sex is female (0 = Male, 1 = Female)
 0   ,#Race is hispanic
 0   ,#Race is black
-0   ,#Race is other
+1   ,#Race is other
 0   ,#as child, badly beaten by parent/caregiver
 0   ,#badly beaten by spouse/romantic partner
 1   ,#badly beaten by anyone else
