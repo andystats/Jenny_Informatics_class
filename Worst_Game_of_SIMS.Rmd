@@ -12,7 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 \tableofcontents
 ## Coefficients
 Coefficients of the logistic regression model used to impute PTSD outcomes in Kessler et al\footnote{Kessler RC, Duncan GJ, Gennetian LA, et al.: Associations of housing mobility interventions for children in high-poverty neighborhoods with subsequent mental disorders during adolescence. JAMA. 2014; 311(9):
-937–948.}
+937–948.} 
 
 
 ![Kessler Table 1.](T1.png)
