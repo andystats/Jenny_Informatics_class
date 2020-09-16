@@ -1,7 +1,7 @@
 ---
 title: "Worst Game Of SIMS"
 author: "In-class exercise"
-date: "9/26/2019"
+date: "9/30/2020"
 output: pdf_document
 ---
 
