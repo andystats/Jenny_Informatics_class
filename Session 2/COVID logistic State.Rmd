@@ -1,0 +1,317 @@
+---
+title: "COVID-19 logistic curve modeling by US state"
+author: "Single state example"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      error=FALSE, 
+                      warning = FALSE,
+                      message= FALSE)
+```
+
+# Background 
+
+Although it can often be misleading to try to predict the trend of an epidemic (from limited and flawed data) during its early-to-mid stages, it is often important to try to predict some features during the outbreak, rather than to wait until retrospective data is available. When is the right time? For relatively closed systems, the cumulative case curve will always be S-shaped and well-described by a logistic-type model - with the essential factors being the inflection time ($t_m$) and estimated maximum caseload. As long as the available data include this inflection point and a time interval shortly after, the curve fitting (and estimated future case number) will be reasonably accurate. [1]
+
+Here we present a simple method using R to derive the three-parameter logistic model from publicly-available COVID data provided by Johns Hopkins CSSE. Some data formatting steps use the $tidyverse$ package and model estimation uses the built-in $SSlogis$ function.
+
+First, load the tidyverse library (install if needed):
+
+```{r}
+#install.packages("tidyverse") 
+library(tidyverse)
+library(ggplot2)
+library(ggpubr)
+theme_set(theme_pubr())
+library(zoo)
+library(ggthemes)
+```
+
+## Import and format
+
+
+```{r pressure}
+mydata <- read.csv(url("https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_US.csv"), na.strings = c("", "NA"))
+#deaths <- read.csv(url("https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_US.csv"), na.strings = c("", "NA"))
+```
+
+
+
+
+
+```{r}
+State <- "Utah" 
+k = 20 #future days 
+CASES <- mydata %>% 
+  filter(Province_State ==State) %>% 
+  select(starts_with("X"))
+```
+
+## State and forecast days
+For example, let's use  ``r State``. And for any forecasts, we'll set ``r k`` days. It's easy to change state, but note in the final figure the spacing of text might be off, so you'll need to customize to not smoosh text.
+
+
+
+Now some data wrangling to get dates, restrict to where positive cases, and take a peek at the temp data.
+
+```{r}
+Y<- colSums(CASES) 
+n <- as.numeric(length(Y)) 
+
+temp1 <- data.frame(y = Y, x = seq(1:n)) 
+temp1$date<-row.names(temp1) 
+
+temp <- temp1 %>% filter(y > 0) 
+(date1<-substr(temp[1,]$date, 2, 8)) 
+(date<-substr(temp[temp$x==max(temp$x),]$date, 2, 8)) 
+
+(Max <- temp[temp$x==max(temp$x),]$y) 
+head(temp)
+```
+
+
+
+Some more data wrangling and calculations to get percent changes.
+
+
+```{r}
+last_obs <- max(temp$x) 
+next_last_obs <- last_obs - 1 
+seven_days_ago <- last_obs - 7 
+new_cases <- temp[ temp$x ==last_obs , 1] - temp[ temp$x ==next_last_obs , 1] 
+
+one_day_percent <- (temp[ temp$x ==last_obs , 1] - temp[ temp$x ==next_last_obs , 1])/temp[ temp$x ==next_last_obs, 1] *100 
+
+seven_days_percent <- (temp[ temp$x ==last_obs , 1] - temp[ temp$x ==seven_days_ago , 1])/temp[ temp$x ==seven_days_ago, 1] *100
+```
+
+## Logistic curve 
+
+Now calculate the logistic curve.
+
+```{r}
+Z <- nls(y ~ SSlogis(x, Asym, xmid, scal), temp); ZZ<-summary(Z) 
+
+peak <- ZZ$parameters[1] 
+midpoint <- temp %>% 
+  filter(x == round(ZZ$parameters[2])) %>% 
+  mutate(date = str_sub(date, 2, 8)) %>% 
+  select(date) 
+
+
+```
+
+### Estimated logistic asymptote and inflection point date: 
+
+**Estimated asymptote**
+
+```{r}
+round(peak) # estimated asymptote 
+```
+
+**Inflection date**
+
+```{r}
+midpoint # date of inflection point 
+```
+
+
+**AIC** *(smaller is better)*
+
+```{r}
+AIC(Z) # AIC = -2LL + 2k
+BIC(Z)
+```
+
+
+
+# Plot
+```{r, fig.width = 10, fig.height=10}
+ # pdf("curve.pdf", width = 12, height = 10)
+ # png(file = "curve.png", width = 1080, height = 900, units = "px", pointsize = 14)
+par(family="serif") 
+plot(temp$x, temp$y, ylab = "COVID SARS-2 Confirmed Cases", xlab="", xlim =c(min(temp$x),n+k), 
+     ylim=c(0, max(temp$y) + 0.25*max(temp$y)), type="l", col="navy", lwd=3, 
+     axes=F, 
+     main = paste("COVID-19 cases in", State, " (updated", date , ")"), 
+     sub = "Using 2019 Novel Coronavirus COVID-19 (2019-nCoV) 
+     Data Repository by Johns Hopkins CSSE") 
+
+axis(2) 
+axis(1, at=c(temp[1,2], max(temp$x) ), lab=c(date1, date))
+
+lines(seq(1:n), predict(Z, list(x = seq(1:n))), lwd=2, col='blue', lty=3) 
+abline( h = max(temp$y), lty=3) 
+#abline( h = ZZ$parameters[1], lty=3) 
+abline(v=temp[temp$date == "X8.18.20",]$x, lty=2, col="red")
+text(max(temp$x)-120, max(temp$y) -6000, paste("Daily new cases = ", new_cases )) 
+text(max(temp$x)-120, max(temp$y)-2000, paste("Daily percent increase = ", round(one_day_percent,1), "%" )) 
+text(max(temp$x)-120, max(temp$y)-4000, paste("Seven-day percent increase = ", round(seven_days_percent,1), "%" )) 
+
+#text(max(temp$x)-80, ZZ$parameters[1]-2000, paste("Estimated case asymptote = ", round(ZZ$parameters[1])), col="grey") 
+text(n,  1000, paste("model AIC = ", round(AIC(Z),2), "\n (smaller is better)"),col="grey")
+
+Z10 <- round(predict(Z, list(x = seq(n+1,n+k)))) 
+
+#k-day forecast 
+Z10[1:k] 
+lines(seq(n+1,n+k), Z10[1:k], col="lightblue", lwd=2, lty=2)
+ # dev.off()
+```
+
+
+
+
+## References
+
+[1] Hsieh YH, Lee JY, Chang HL. SARS epidemiology modeling. *Emerg Infect Dis.* 2004;10(6):1165-1168. doi:10.3201/eid1006.031023
+
+
+
+# Daily case increase from COVID tracker
+```{r}
+mydata0 <-read.csv(url("https://raw.githubusercontent.com/CivilServiceUSA/us-governors/master/us-governors/data/us-governors.csv"), na.strings = c("", "NA")) %>%
+        dplyr::select(state_code, state_name, party) %>%
+        rename(state = state_code)
+mydata2 <-read.csv(url("https://covidtracking.com/api/v1/states/daily.csv"), na.strings = c("", "NA"))
+
+mydf <- merge(mydata0, mydata2 , by="state")
+        mydf$Date <- as.Date(as.character(mydf$date), "%Y %m %d")
+```
+
+
+
+```{r}
+State  = "UT"
+St <- mydata2 %>% 
+        filter(state==State) %>%
+        filter(positiveIncrease > 0)
+St$Date <- as.Date(as.character(St$date), "%Y %m %d")
+theme_set(theme_few(base_size = 14, base_family = "serif"))
+```
+
+
+```{r, fig.width = 10, fig.height=10}
+min <- as.Date("2020-4-1")
+max <- NA
+
+r<- ggplot(
+        St, 
+        aes(x = Date , y = positiveIncrease)) +
+        geom_point(show.legend = FALSE, alpha = 0.7) +  
+        #facet_wrap(mydf$state_name, scales = "free") + 
+        geom_line(aes(y=rollmean(positiveIncrease, 7, na.pad=TRUE), size=1.5))+
+        geom_smooth()  + #ylim(0, 1500) +
+        #geom_point(aes(x = as.Date("2020-09-25"), y=1411), colour="red", size=1.5) + 
+        scale_color_manual(values = c("#00AFBB", "#FC4E07")) + 
+        labs(x = "", y = "Daily Positive Increase", title = paste("COVID Daily positive increase in", State, "
+        (with 7-day moving average)", "
+        Update: ", date)) + scale_x_date(limits = c(min, max)) + 
+        theme(legend.position = "none")
+
+  # r <- r + geom_vline(xintercept=St[St$Date=="2020-08-05",55],
+  #                linetype=4, colour="red") 
+  #+ annotate("text", x = as.Date("2020-08-5"), y=5, label = "Inflection (2)")
+
+# pdf("UT.pdf", width = 12, height = 10)
+# png(file = "UT.png", width = 1080, height = 900, units = "px", pointsize = 14)
+r
+# dev.off()
+```
+
+```{r}
+library(dygraphs)
+library(xts)
+
+cases.ts <- xts(St$positiveIncrease, order.by=as.POSIXct(St$Date))
+
+dygraph(cases.ts, main = paste("Daily increase COVID cases in", State)) %>%
+  dyRoller(rollPeriod = 10) %>%
+  dySeries("V1", strokeWidth = 3, label = "Case increase") %>%
+  dyShading(from = "2020-08-18", to = Sys.Date(), color = "#FFE6E6") %>%
+  dyRangeSelector()
+
+```
+
+
+
+
+# Experimental: Bi-logistic growth 
+
+
+
+$$ N(t) = \sum_{i=1}^{m} \frac{k_i}{1+ e^{(-ln(81)/\Delta t_{mi})(t-t_{mi})}} $$ 
+
+In the two-wave or two-pulse logistic case, this simplifies to: 
+
+$$ N(t) = \frac{k_1}{1+ e^{(-ln(81)/\Delta t_{m1})(t-t_{m1})}}+\frac{k_2}{1+ e^{(-ln(81)/\Delta t_{m2})(t-t_{m2})}} $$ 
+
+Resetting to Utah as model needs good starting values and not obvious how to pull them out: 
+
+```{r}
+State <- "Utah" 
+CASES <- mydata %>% 
+  filter(Province_State ==State) %>% 
+  select(starts_with("X"))
+
+
+Y<- colSums(CASES) 
+n <- as.numeric(length(Y)) 
+
+temp1 <- data.frame(y = Y, x = seq(1:n)) 
+temp1$date<-row.names(temp1) 
+
+temp <- temp1 %>% filter(y > 0)
+```
+
+
+
+
+```{r}
+
+y <- temp$y
+x <- temp$x
+
+bilogistic <- nls(y ~  (( k1 / (1 + exp( (-log(81)/a1) * (x - b1)))) +
+                               ( k2 / (1 + exp( (-log(81)/a2) * (x - b2))))),
+                      start=c(a1=87,k1=38000,b1=150,
+                              a2=104,k2=72000,b2=260))
+
+
+bilogistic
+```
+
+
+```{r}
+plot(x,y, ylim=c(0,100000), xlim=c(50,300))
+newx  <- seq(50,300)
+lines(newx,predict(bilogistic,newdata=data.frame(x=newx)),lwd=2)
+
+
+AIC(bilogistic)
+BIC(bilogistic)
+```
+
+
+
+
+# Other 
+
+https://logletlab.com
+
+
+
+https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7167569/
+
+
+
+
+
+
+

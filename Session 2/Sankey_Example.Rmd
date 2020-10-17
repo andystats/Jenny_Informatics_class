@@ -1,0 +1,110 @@
+---
+title: "Sankey Diagram Example"
+author: "For JA Informatics"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(networkD3)
+library(plotly)
+```
+
+# Version 1
+
+```{r}
+names <-c(
+  "Primary Dx", #0
+  "Rx1",        #1
+  "Rx2",        #2
+  "Dx2",        #3
+  "Rx3",        #4
+  "Rx4",        #5
+  "Dx3",        #6
+  "LTFU",       #7
+  "Radiology",  #8
+  "Dies")       #9
+
+nodes = data.frame("name" = names)
+
+links = as.data.frame(matrix(c(
+  0,1,6861,
+  1,2,5284,
+  1,3,1111,
+  1,4,349,
+  1,5,117,
+  2,6,3368,
+  2,7,1916,
+  3,8,590,
+  3,9,1425,
+  0,8,11979,
+  8,4,1213,
+  8,3,1474,
+  8,5,393,
+  #8,9, 1000, 
+  3,1,570,
+  8,6,1000),
+  byrow = TRUE, ncol = 3))
+
+names(links) = c("source", "target", "value")
+```
+
+```{r}
+
+sankeyNetwork(Links = links, Nodes = nodes,
+              Source = "source", Target = "target",
+              Value = "value", NodeID = "name",
+              fontSize= 15, nodeWidth = 30)
+```
+
+
+# Version 2
+
+```{r}
+
+p <- plot_ly(
+  type = "sankey",
+  orientation = "h",
+  
+  node = list(
+    label = names,
+    #color = c("blue", "blue", "blue", "blue", "blue", "blue"),
+    pad = 15,
+    thickness = 20,
+    line = list(
+      color = "blue",
+      width = 0.5
+    )
+  ),
+  
+  link = list(
+    source = links$source,
+    target = links$target,
+    value =  links$value
+  )
+) %>% 
+  layout(
+    title = "Pt Journey",
+    font = list(family="serif",
+      size = 13
+    )
+  )
+
+
+```
+
+```{r}
+p
+```
+
+
+```{r}
+library(htmlwidgets)
+saveWidget(p, file="Sankey_interactive.html")
+```
+
