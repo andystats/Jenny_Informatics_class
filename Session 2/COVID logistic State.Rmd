@@ -289,8 +289,8 @@ bilogistic
 
 
 ```{r}
-plot(x,y, ylim=c(0,100000), xlim=c(50,300))
-newx  <- seq(50,300)
+plot(x,y, ylim=c(0,120000), xlim=c(50,320))
+newx  <- seq(50,320)
 lines(newx,predict(bilogistic,newdata=data.frame(x=newx)),lwd=2)
 
 
