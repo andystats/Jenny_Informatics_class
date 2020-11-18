@@ -281,7 +281,7 @@ x <- temp$x
 bilogistic <- nls(y ~  (( k1 / (1 + exp( (-log(81)/a1) * (x - b1)))) +
                                ( k2 / (1 + exp( (-log(81)/a2) * (x - b2))))),
                       start=c(a1=87,k1=38000,b1=150,
-                              a2=104,k2=72000,b2=260))
+                              a2=104,k2=100000,b2=260))
 
 
 bilogistic
@@ -289,7 +289,7 @@ bilogistic
 
 
 ```{r}
-plot(x,y, ylim=c(0,150000), xlim=c(50,320))
+plot(x,y, ylim=c(0,180000), xlim=c(50,320))
 newx  <- seq(50,320)
 lines(newx,predict(bilogistic,newdata=data.frame(x=newx)),lwd=2)
 
