@@ -120,7 +120,7 @@ x <- temp$x
 Z <- nls(y ~  (( k1 / (1 + exp( (-log(81)/a1) * (x - b1)))) +
                                ( k2 / (1 + exp( (-log(81)/a2) * (x - b2))))),
                       start=c(a1=87,k1=38000,b1=150,
-                              a2=104,k2=200000,b2=260))
+                              a2=104,k2=400000,b2=300))
 ZZ<-summary(Z) 
 peak <- ZZ$parameters[1] 
 midpoint <- temp %>% 
@@ -305,7 +305,7 @@ x <- temp$x
 bilogistic <- nls(y ~  (( k1 / (1 + exp( (-log(81)/a1) * (x - b1)))) +
                                ( k2 / (1 + exp( (-log(81)/a2) * (x - b2))))),
                       start=c(a1=87,k1=38000,b1=150,
-                              a2=104,k2=200000,b2=260))
+                              a2=104,k2=400000,b2=300))
 
 
 bilogistic
