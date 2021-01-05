@@ -157,7 +157,7 @@ BIC(Z)
 
 # Plot
 ```{r, fig.width = 10, fig.height=10}
- # pdf("curve.pdf", width = 12, height = 10)
+#  pdf("curve.pdf", width = 12, height = 10)
  # png(file = "curve.png", width = 1080, height = 900, units = "px", pointsize = 14)
 par(family="serif") 
 plot(temp$x, temp$y, ylab = "COVID SARS-2 Confirmed Cases", xlab="", xlim =c(min(temp$x),n+k), 
@@ -174,8 +174,8 @@ lines(seq(1:n), predict(Z, list(x = seq(1:n))), lwd=2, col='blue', lty=3)
 abline( h = max(temp$y), lty=3) 
 #abline( h = ZZ$parameters[1], lty=3) 
 #abline(v=temp[temp$date == "X8.18.20",]$x, lty=2, col="red")
-text(max(temp$x)-120, max(temp$y) -12000, paste("Daily new cases = ", new_cases )) 
-text(max(temp$x)-120, max(temp$y)-4000, paste("Daily percent increase = ", round(one_day_percent,1), "%" )) 
+text(max(temp$x)-120, max(temp$y) -24000, paste("Daily new cases = ", new_cases )) 
+text(max(temp$x)-120, max(temp$y)-16000, paste("Daily percent increase = ", round(one_day_percent,1), "%" )) 
 text(max(temp$x)-120, max(temp$y)-8000, paste("Seven-day percent increase = ", round(seven_days_percent,1), "%" )) 
 
 #text(max(temp$x)-80, ZZ$parameters[1]-2000, paste("Estimated case asymptote = ", round(ZZ$parameters[1])), col="grey") 
