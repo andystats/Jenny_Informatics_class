@@ -17,7 +17,6 @@ knitr::opts_chunk$set(echo = TRUE,
 
 # Background 
 
-# Update: stuff keeps breaking - trust nothing :)
 
 Although it can often be misleading to try to predict the trend of an epidemic (from limited and flawed data) during its early-to-mid stages, it is often important to try to predict some features during the outbreak, rather than to wait until retrospective data is available. When is the right time? For relatively closed systems, the cumulative case curve will always be S-shaped and well-described by a logistic-type model - with the essential factors being the inflection time ($t_m$) and estimated maximum caseload. As long as the available data include this inflection point and a time interval shortly after, the curve fitting (and estimated future case number) will be reasonably accurate. [1]
 

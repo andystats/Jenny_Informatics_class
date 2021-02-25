@@ -1,0 +1,10 @@
+name: Publish Document
+title:
+username:
+account: rpubs
+server: rpubs.com
+hostUrl: rpubs.com
+appId: https://api.rpubs.com/api/v1/document/726972/bf34437c11754eefa771a5d75a21e07a
+bundleId: https://api.rpubs.com/api/v1/document/726972/bf34437c11754eefa771a5d75a21e07a
+url: http://rpubs.com/andystats/726972
+when: 1614122358.44652
