@@ -257,7 +257,7 @@ cases.ts <- xts(St$positiveIncrease, order.by=as.POSIXct(St$Date))
 dygraph(cases.ts, main = paste("Daily increase COVID cases in", State)) %>%
   dyRoller(rollPeriod = 5) %>%
   dySeries("V1", strokeWidth = 3, label = "5-day rolling daily case increase") %>%
-  dyShading(from = "2020-11-03", to = Sys.Date(), color = "#FFE6E6") %>%
+  dyShading(from = "2021-01-01", to = Sys.Date(), color = "#FFE6E6") %>%
   dyRangeSelector()
 
 ```
