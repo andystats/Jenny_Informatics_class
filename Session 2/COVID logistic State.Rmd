@@ -211,7 +211,7 @@ mydf <- merge(mydata0, mydata2 , by="state")
 
 
 ```{r}
-State  = "UT"
+State  = "FL"
 St <- mydata2 %>% 
         filter(state==State) %>%
         filter(positiveIncrease > 0)
