@@ -47,12 +47,14 @@ bigstate <- big %>%
   filter(State == "Florida") %>%
   filter(Age.Group == "All Ages") %>%
   filter(Group == "By Month") %>%
-  filter(Year == 2021)
+  filter(Year == 2021) %>%
+  #filter( Sex == "All Sexes") %>%
+  mutate(COVID_proportion = COVID.19.Deaths/Total.Deaths)
 
 
 ggplot(bigstate, aes(x=Month)) + 
-  geom_smooth(aes(y=COVID.19.Deaths, col=Sex)) +
-  labs(x = "Month in 2021", y = "Covid deaths", title = paste("State:", bigstate$State[1])) +
+  geom_smooth(aes(y=COVID_proportion, col=Sex)) +
+  labs(x = "Month in 2021", y = "Covid proportion of all deaths", title = paste("State:", bigstate$State[1])) +
   ggthemes::theme_few()
 
 ggplot(bigstate, aes(x=Month)) + 
