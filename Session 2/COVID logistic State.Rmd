@@ -39,7 +39,7 @@ library(ggthemes)
 
 ```{r pressure}
 mydata <- read.csv(url("https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_US.csv"), na.strings = c("", "NA"))
-#deaths <- read.csv(url("https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_US.csv"), na.strings = c("", "NA"))
+deaths <- read.csv(url("https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_US.csv"), na.strings = c("", "NA"))
 ```
 
 
@@ -156,7 +156,7 @@ BIC(Z)
 
 # Plot
 ```{r, fig.width = 10, fig.height=10}
-#  pdf("curve.pdf", width = 12, height = 10)
+ # pdf("curve.pdf", width = 12, height = 12)
  # png(file = "curve.png", width = 1080, height = 900, units = "px", pointsize = 14)
 par(family="serif") 
 plot(temp$x, temp$y, ylab = "COVID SARS-2 Confirmed Cases", xlab="", xlim =c(min(temp$x),n+k), 
