@@ -52,6 +52,7 @@ links = as.data.frame(matrix(c(
   byrow = TRUE, ncol = 3))
 
 names(links) = c("source", "target", "value")
+write.csv(links, "example.csv")
 ```
 
 ```{r}
